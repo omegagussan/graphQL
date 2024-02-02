@@ -1,0 +1,18 @@
+query getSingleImage($imageId: Int!) {
+  image(id: $imageId) {
+    title
+    owner
+    category
+    url
+  }
+}
+
+query getImagesByCategory($imageCategory:String) {
+  images(category:$imageCategory) {
+    id
+    title
+    owner
+    url
+    category
+  }
+}
