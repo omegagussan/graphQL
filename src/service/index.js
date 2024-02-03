@@ -14,12 +14,7 @@ const listInventory = async (params) => {
 }
 
 const listInventoryInternal = async (inventory, orders, limit = 10, offset = 0) => {
-    const results = inventory.map((product) => {
-      return {
-        ...product,
-        orders: orders.filter((order) => order.productId === product.productId),
-      };
-    });
+    const results = inventory.map((product) => enrichWithOrders(product, orders));
     const upper = (offset + limit) >= results.length ? results.length : offset + limit;
     return results.slice(offset, upper);
 }
@@ -28,10 +23,18 @@ const updateInventory = async ({productId, product}) => {
     if (!inventory) {
       inventory = await Inventory();
     }
+    if (!orders) {
+      orders = await Orders();
+    }
     return updateInventoryInternal(inventory, productId, product);
 }
 
-const updateInventoryInternal = async (inventory, productId, product) => {
+const enrichWithOrders = (product, orders) => ({
+  ...product,
+  orders: orders.filter((order) => order.productId === product.productId),
+})
+
+const updateInventoryInternal = async (inventory, orders, productId, product) => {
   const index = inventory.findIndex((i) => i.productId === productId);
 
   // obs! slightly different then statuscodes in REST. GraphQL "working" answers with 200 OK
@@ -39,7 +42,7 @@ const updateInventoryInternal = async (inventory, productId, product) => {
       return null;
   }
   inventory[index] = updateIfPresent(inventory[index], product);
-  return inventory[index];
+  return enrichWithOrders(inventory[index], orders);
 }
 
 

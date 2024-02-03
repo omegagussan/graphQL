@@ -74,12 +74,13 @@ describe('Service', () => {
         })
     })
     describe('updateInventory', () => {
-        test('Will update inventory -- patch style', async () => {
+        test('Will update inventory, with the fields provided and return InventoryWithOrders', async () => {
             const expected = {
                 ...Inventory[0],
-                "quantity": 10
+                "quantity": 10,
+                "orders": [Orders[0], Orders[2]]
             };
-            await expect(updateInventoryInternal(Inventory, "point-of-testing", {quantity: 10})).resolves.toEqual(expected)
+            await expect(updateInventoryInternal(Inventory, Orders, "point-of-testing", {quantity: 10})).resolves.toEqual(expected)
         })
     })
 })
