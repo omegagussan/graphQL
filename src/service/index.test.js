@@ -54,4 +54,17 @@ describe('Service', () => {
         };
         await expect(listInventoryInternal(Inventory, Orders)).resolves.toEqual([expected])
     })
+
+    test('Will respect offset and limit, where limit is bounded by upper length', async () => {
+        const toResponse = (o) => ({orders: [], ...o});
+        const given = [{ "id": "1" }, { "id": "2" }, { "id": "3" }, { "id": "4" }, { "id": "5" }];
+        const expected = [given[2], given[3], given[4]].map(toResponse);
+        await expect(listInventoryInternal(given, Orders, 100, 2)).resolves.toEqual(expected)
+    })
+
+    test('Will respect offset and limit, where limit is bounded by upper length. Out of bounds is empty array!', async () => {
+        const toResponse = (o) => ({orders: [], ...o});
+        const given = [{ "id": "1" }, { "id": "2" }, { "id": "3" }, { "id": "4" }, { "id": "5" }];
+        await expect(listInventoryInternal(given, Orders, 100, 100)).resolves.toEqual([])
+    })
 })
