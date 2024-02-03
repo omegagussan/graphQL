@@ -1,7 +1,7 @@
 import { createReadStream } from 'fs';
 import { parse } from 'csv-parse';
-import Product from './domain/product';
-import Order from './domain/order';
+import { Product } from './domain/product.js';
+import { Order } from './domain/order.js';
 
 
 const readCSV = async (path, type) => {
@@ -19,7 +19,6 @@ const readCSV = async (path, type) => {
                 }
             })
             .on("end", function () {
-                console.log("finished");
                 return resolve(data);
             })
             .on("error", function (error) {

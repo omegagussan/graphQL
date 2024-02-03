@@ -1,5 +1,5 @@
 /* eslint-env jest */
-import { listInventoryInternal } from './index'; 
+import { listInventoryInternal, listInventory } from './index'; 
 
 const Inventory = [{
     "category": "Shoes", 
@@ -66,5 +66,10 @@ describe('Service', () => {
         const toResponse = (o) => ({orders: [], ...o});
         const given = [{ "id": "1" }, { "id": "2" }, { "id": "3" }, { "id": "4" }, { "id": "5" }];
         await expect(listInventoryInternal(given, Orders, 100, 100)).resolves.toEqual([])
+    })
+
+    test('Will resolve inports correctly!', async () => {
+        //await expect(foo()).resolves.toBeDefined() => can still resolve to undefined
+        await expect(listInventory()).resolves.not.toThrow()
     })
 })

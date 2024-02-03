@@ -1,22 +1,23 @@
-import { Inventory, Orders } from "./../storage";
+import { Inventory, Orders } from "./../storage.js";
 
-const listInventory = async (limit=10, offset=0) => {
+const listInventory = async (params) => {
     const inventory = await Inventory();
     const orders = await Orders();
-    return listInventoryInternal(inventory, orders, limit, offset)
+    return listInventoryInternal(inventory, orders, params?.limit, params?.offset)
 }
 
-const listInventoryInternal = async (inventory, orders, limit, offset) => {
+const listInventoryInternal = async (inventory, orders, limit = 10, offset = 0) => {
     const results = inventory.map((product) => {
       return {
         ...product,
         orders: orders.filter((order) => order.productId === product.productId),
       };
     });
-    return results.slice(offset, offset + limit ? offset + limit : results.length);
+    const upper = (offset + limit) >= results.length ? results.length : offset + limit;
+    return results.slice(offset, upper);
 }
 
-module.exports = {
+export {
     listInventory,
     listInventoryInternal
 }

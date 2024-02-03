@@ -1,9 +1,8 @@
 import { buildSchema } from "graphql";
 
-// GraphQL Schema
 const schema = buildSchema(`
       type Query {
-        listInventory(limit: Int!, offset: Int!): [Image]
+        listInventory(limit: Int!, offset: Int!): [ProductWithOrders]
       }
       type ProductWithOrders {
         productId : String
@@ -27,6 +26,6 @@ const schema = buildSchema(`
       }
 `);
 
-module.exports = {
+export {
     schema
 }
