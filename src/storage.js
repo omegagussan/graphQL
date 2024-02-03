@@ -1,14 +1,13 @@
-const fs = require('fs');
-const { parse } = require('csv-parse');
-console.log("Current directory:", __dirname);
-const Product = require('./domain/product');
-const Order = require('./domain/order');
+import { createReadStream } from 'fs';
+import { parse } from 'csv-parse';
+import Product from './domain/product';
+import Order from './domain/order';
 
 
 const readCSV = async (path, type) => {
     return new Promise((resolve, reject) => {
         const data = [];
-        fs.createReadStream(path)
+        createReadStream(path)
             .pipe(parse({ delimiter: ",", from_line: 2 }))
             .on("data", function (row) {
                 if (type == Product){
@@ -30,7 +29,5 @@ const readCSV = async (path, type) => {
     });
 }
 
-module.exports = {
-    Inventory : async () => await readCSV('./data/inventory.csv', Product),
-    Orders : async () => await readCSV('./data/orders.csv', Order)
-}
+export async function Inventory() { return await readCSV('./data/inventory.csv', Product); }
+export async function Orders() { return await readCSV('./data/orders.csv', Order); }

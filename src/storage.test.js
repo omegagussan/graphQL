@@ -1,10 +1,16 @@
 /* eslint-env jest */
-const { Inventory, Orders } = require('./storage'); 
+import { Inventory, Orders } from './storage'; 
 
-describe('Storage.ts', () => {
+describe('Storage.js', () => {
   test('Inventory is parsed OK', async () => {
     const resolvedInventory = await Inventory();
-    const expected = {"category": "Shoes", "name": "High-top sneakers", "productId": "prod1548#prod104001000080", "quantity": "8", "subCategory": "Sneakers"};
+    const expected = {
+      "category": "Shoes", 
+      "name": "High-top sneakers", 
+      "productId": "prod1548#prod104001000080", 
+      "quantity": "8", 
+      "subCategory": "Sneakers"
+    };
     expect(resolvedInventory[0]).toEqual(expected)
   })
 
