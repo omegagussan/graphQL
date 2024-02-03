@@ -1,11 +1,12 @@
 import express from "express";
 import { graphqlHTTP } from "express-graphql";
 import { schema } from "./graphql.js";
-import { listInventory } from "./service/index.js";
+import { listInventory, updateInventory } from "./service/index.js";
 
 // Resolver
 const root = {
-  listInventory
+  listInventory,
+  updateInventory
 };
 
 //Create an express server and GraphQL endpoint

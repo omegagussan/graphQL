@@ -1,5 +1,5 @@
 /* eslint-env jest */
-import { listInventoryInternal, listInventory } from './index'; 
+import { listInventoryInternal, listInventory, updateInventoryInternal } from './index'; 
 
 const Inventory = [{
     "category": "Shoes", 
@@ -47,29 +47,39 @@ const Orders = [{
    },];
 
 describe('Service', () => {
-    test('Will join inventory and orders', async () => {
-        const expected = {
-            ...Inventory[0],
-            "orders": [Orders[0], Orders[2]]
-        };
-        await expect(listInventoryInternal(Inventory, Orders)).resolves.toEqual([expected])
+    describe('listInventory', () => {
+        test('Will join inventory and orders', async () => {
+            const expected = {
+                ...Inventory[0],
+                "orders": [Orders[0], Orders[2]]
+            };
+            await expect(listInventoryInternal(Inventory, Orders)).resolves.toEqual([expected])
+        })
+    
+        test('Will respect offset and limit, where limit is bounded by upper length', async () => {
+            const toResponse = (o) => ({orders: [], ...o});
+            const given = [{ "id": "1" }, { "id": "2" }, { "id": "3" }, { "id": "4" }, { "id": "5" }];
+            const expected = [given[2], given[3], given[4]].map(toResponse);
+            await expect(listInventoryInternal(given, Orders, 100, 2)).resolves.toEqual(expected)
+        })
+    
+        test('Will respect offset and limit, where limit is bounded by upper length. Out of bounds is empty array!', async () => {
+            const given = [{ "id": "1" }, { "id": "2" }, { "id": "3" }, { "id": "4" }, { "id": "5" }];
+            await expect(listInventoryInternal(given, Orders, 100, 100)).resolves.toEqual([])
+        })
+    
+        test('Will resolve inports correctly!', async () => {
+            //await expect(foo()).resolves.toBeDefined() => can still resolve to undefined
+            await expect(listInventory()).resolves.not.toThrow()
+        })
     })
-
-    test('Will respect offset and limit, where limit is bounded by upper length', async () => {
-        const toResponse = (o) => ({orders: [], ...o});
-        const given = [{ "id": "1" }, { "id": "2" }, { "id": "3" }, { "id": "4" }, { "id": "5" }];
-        const expected = [given[2], given[3], given[4]].map(toResponse);
-        await expect(listInventoryInternal(given, Orders, 100, 2)).resolves.toEqual(expected)
-    })
-
-    test('Will respect offset and limit, where limit is bounded by upper length. Out of bounds is empty array!', async () => {
-        const toResponse = (o) => ({orders: [], ...o});
-        const given = [{ "id": "1" }, { "id": "2" }, { "id": "3" }, { "id": "4" }, { "id": "5" }];
-        await expect(listInventoryInternal(given, Orders, 100, 100)).resolves.toEqual([])
-    })
-
-    test('Will resolve inports correctly!', async () => {
-        //await expect(foo()).resolves.toBeDefined() => can still resolve to undefined
-        await expect(listInventory()).resolves.not.toThrow()
+    describe('updateInventory', () => {
+        test('Will update inventory -- patch style', async () => {
+            const expected = {
+                ...Inventory[0],
+                "quantity": 10
+            };
+            await expect(updateInventoryInternal(Inventory, "point-of-testing", {quantity: 10})).resolves.toEqual(expected)
+        })
     })
 })
